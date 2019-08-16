@@ -67,7 +67,12 @@ class ControladoraTest {
 		Controladora controladora = new Controladora();
 		assertEquals("121212", controladora.executar("P.OOOO"));
 	}
-	
-	
+
+	@Test
+	void executarTest11() {
+		Controladora controladora = new Controladora();
+		assertEquals("10111111", controladora.executar("POPP...."));
+	}
+
 
 }

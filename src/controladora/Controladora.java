@@ -2,84 +2,37 @@ package controladora;
 
 public class Controladora {
 
-	private IPortao portao;
-	private int posicaoPortao;
-	private int posicaoMaximaPortao;
-	private boolean portaoAbrindo;
-	
 	public Controladora() {
-		this.portao = new PortaoParado(this);
-		this.posicaoPortao = 0;
-		this.posicaoMaximaPortao = 5;
-		this.portaoAbrindo = true;
 	}
-	
-	// GETTERS E SETTERS
-	public IPortao getPortao() {
+
+	private IPortao tratarEntrada(final char ch, final IPortao portao) {
+		if (ch == 'P') {
+			return portao.tratarBotao();
+		} else if (ch == 'O') {
+			return portao.tratarObstaculo();
+		}
 		return portao;
 	}
 
 
-	public void setPortao(IPortao portao) {
-		this.portao = portao;
-	}
-
-
-	public int getPosicaoPortao() {
-		return posicaoPortao;
-	}
-
-
-	public void setPosicaoPortao(int posicaoPortao) {
-		this.posicaoPortao = posicaoPortao;
-	}
-
-
-	public int getPosicaoMaximaPortao() {
-		return posicaoMaximaPortao;
-	}
-
-
-	public void setPosicaoMaximaPortao(int posicaoMaximaPortao) {
-		this.posicaoMaximaPortao = posicaoMaximaPortao;
-	}
-
-
-	public boolean isPortaoAbrindo() {
-		return portaoAbrindo;
-	}
-
-
-	public void setPortaoAbrindo(boolean portaoAbrindo) {
-		this.portaoAbrindo = portaoAbrindo;
-	}
-
-	
-
-	public String executar(String entrada) {
-		String saida = "";
-		
-		for (int i = 0; i < entrada.length(); i++) {
-			switch (entrada.charAt(i)) {
-			case '.': 						// NADA A FAZER
-				this.portao.tratarTempo();
-				break;
-
-			case 'P':						// BOTAO PRESSIONADO
-				this.portao.tratarBotao();
-				this.portao.tratarTempo();
-				break;
-				
-			case 'O':						// OBSTACULO
-				this.portao.tratarObstaculo();
-				this.portao.tratarTempo();
-				break;
-			}
-			saida += Integer.toString(this.getPosicaoPortao());
+	private String processaComando(final String entrada, final int posAtual, final IPortao portao) {
+		//Caso de parada
+		if (posAtual >= entrada.length()) {
+			return "";
 		}
-		
+		final char ch = entrada.charAt(posAtual);
+		final IPortao portaoTratado = tratarEntrada(ch, portao);
+		final IPortao portaoProcessado = portaoTratado.tratarTempo();
+
+		final String resultadoRecursao = processaComando(entrada, posAtual + 1, portaoProcessado);
+		final String saida = Integer.toString(portaoProcessado.posicaoPortao).concat(resultadoRecursao);
 		return saida;
 	}
 
-	
+
+	public String executar(final String entrada) {
+		final String saida = processaComando(entrada, 0, new PortaoParado(0, 5, true));
+		return saida;
+	}
+
 }

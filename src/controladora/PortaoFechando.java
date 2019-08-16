@@ -1,37 +1,33 @@
 package controladora;
 
-public class PortaoFechando implements IPortao{
+public class PortaoFechando extends IPortao {
 
-	private Controladora controladora;
-	
-	public PortaoFechando(Controladora controladora) {
-		this.controladora = controladora;
-		this.controladora.setPortaoAbrindo(false);
+	public PortaoFechando(final int posicaoPortao, final int posicaoMaximaPortao) {
+		this.portaoAbrindo = false;
+		this.posicaoPortao = posicaoPortao;
+		this.posicaoMaximaPortao = posicaoMaximaPortao;
 	}
-	
+
 	@Override
-	public void tratarTempo() {
-		// movimentando o portao
-		this.controladora.setPosicaoPortao(this.controladora.getPosicaoPortao() - 1);
+	public IPortao tratarTempo() {
 		// verificando se o portao chegou no limite inferior
-		if (this.controladora.getPosicaoPortao() == 0) {
+		if (posicaoPortao - 1 == 0) {
 			// proximo movimento sera de abertura
-			this.controladora.setPortaoAbrindo(true);
-			this.controladora.setPortao(new PortaoParado(this.controladora));
+			return new PortaoParado(0, posicaoMaximaPortao, true);
 		}
-		
+		return new PortaoFechando(posicaoPortao - 1, posicaoMaximaPortao);
 	}
 
 	@Override
-	public void tratarBotao() {
+	public IPortao tratarBotao() {
 		// parando o portao
-		this.controladora.setPortao(new PortaoParado(this.controladora));
+		return new PortaoParado(posicaoPortao, posicaoMaximaPortao, portaoAbrindo);
 	}
 
 	@Override
-	public void tratarObstaculo() {
+	public IPortao tratarObstaculo() {
 		// abrindo o portao
-		this.controladora.setPortao(new PortaoAbrindo(this.controladora));
+		return new PortaoAbrindo(posicaoPortao, posicaoMaximaPortao);
 	}
 
 }

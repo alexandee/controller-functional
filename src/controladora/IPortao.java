@@ -1,7 +1,14 @@
 package controladora;
 
-public interface IPortao {
-	public void tratarTempo(); 
-	public void tratarBotao();
-	public void tratarObstaculo();
+public abstract class IPortao {
+
+	int posicaoPortao;
+	int posicaoMaximaPortao;
+	boolean portaoAbrindo;
+
+	abstract public IPortao tratarTempo();
+
+	abstract public IPortao tratarBotao();
+
+	abstract public IPortao tratarObstaculo();
 }

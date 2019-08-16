@@ -1,31 +1,32 @@
 package controladora;
 
-public class PortaoParado implements IPortao{
-	
-	private Controladora controladora;
-	
-	public PortaoParado(Controladora controladora) {
-		this.controladora = controladora;
+public class PortaoParado extends IPortao {
+
+	public PortaoParado(final int posicaoPortao, final int posicaoMaximaPortao, final boolean portaoAbrindo) {
+		this.portaoAbrindo = portaoAbrindo;
+		this.posicaoPortao = posicaoPortao;
+		this.posicaoMaximaPortao = posicaoMaximaPortao;
 	}
 
 	@Override
-	public void tratarTempo() {
-		// aguardando o botao ser pressionado 
-	}
-
-	@Override
-	public void tratarBotao() {
-		// movimentar o portao quando o botao for pressionado
-		if(this.controladora.isPortaoAbrindo()) {
-			this.controladora.setPortao(new PortaoAbrindo(this.controladora));
-		}else {
-			this.controladora.setPortao(new PortaoFechando(this.controladora));
-		}
-		
-	}
-
-	@Override
-	public void tratarObstaculo() {
+	public IPortao tratarTempo() {
 		// aguardando o botao ser pressionado
+		return this;
+	}
+
+	@Override
+	public IPortao tratarBotao() {
+		// movimentar o portao quando o botao for pressionado
+		if (portaoAbrindo) {
+			return new PortaoAbrindo(posicaoPortao, posicaoMaximaPortao);
+		}
+
+		return new PortaoFechando(posicaoPortao, posicaoMaximaPortao);
+	}
+
+	@Override
+	public IPortao tratarObstaculo() {
+		// aguardando o botao ser pressionado
+		return this;
 	}
 }
